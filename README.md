@@ -1,10 +1,10 @@
-# Numworks.js
+# Upsilon.js
 
-[![NPM](https://img.shields.io/npm/v/numworks.js?style=flat-square)](https://www.npmjs.com/package/numworks.js)
+[![NPM](https://img.shields.io/npm/v/upsilon.js?style=flat-square)](https://www.npmjs.com/package/upsilon.js)
 ![Version](https://img.shields.io/github/package-json/v/M4xi1m3/numworks.js?color=green&style=flat-square)
-![License](https://img.shields.io/npm/l/numworks.js?color=blue&style=flat-square)
+![License](https://img.shields.io/npm/l/upsilon.js?color=blue&style=flat-square)
 
-Utility classes to interact with a Numworks calculator using WebUSB.
+Utility classes to interact with a Numworks calculator using WebUSB. Some additinnal features is the calculator has Upsilon installed
 
 ## Running the example
 
