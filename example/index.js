@@ -1,7 +1,7 @@
 
 import Numworks from '../Numworks.js'
 
-var calculator = new Numworks.Recovery();
+var calculator = new Numworks();
 
 var status = document.getElementById("status");
 var connect = document.getElementById("connect");

@@ -57,6 +57,15 @@ class Numworks {
             }
         }
         
+        // If it's an Upsilon calculator, some sectors can be hidden
+        if (this.device.device_.name == 'Upsilon Bootloader') {
+            return "0110"
+        }
+
+        if (this.device.device_.name == 'Upsilon Calculator') {
+            return external_size ? "0110" : "0100"
+        }
+
         if (internal_size === 0x10000) {
             if (external_size === 0) {
                 return (exclude_modded ? "????" : "0110-0M");
@@ -150,7 +159,6 @@ class Numworks {
                 let interfaces = DFU.findDeviceDfuInterfaces(selectedDevice);
                 await _this.__fixInterfaceNames(selectedDevice, interfaces);
                 _this.device = await _this.__connect(new DFU.Device(selectedDevice, interfaces[0]));
-                
                 successCallback();
             }
         ).catch(error => {
