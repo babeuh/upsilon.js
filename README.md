@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/github/package-json/v/M4xi1m3/numworks.js?color=green&style=flat-square)
 ![License](https://img.shields.io/npm/l/upsilon.js?color=blue&style=flat-square)
 
-Utility classes to interact with a Numworks calculator using WebUSB. Some additinnal features is the calculator has Upsilon installed
+Utility classes to interact with a Numworks calculator using WebUSB. Some additional features is the calculator has Upsilon installed
 
 ## Running the example
 
@@ -86,7 +86,7 @@ function someEventHandler(e) {
 
 function connectedHandler() {
   calculator.stopAutoConnect(); // It's connected, so autoConnect should stop.
-  // Do stuff when the claculator gets connected.
+  // Do stuff when the calculator gets connected.
 }
 ```
 
@@ -107,7 +107,7 @@ The function `getModel` can be used to determine the model of the connected calc
   // Whether or not the software is valid, based on a magic number. If false, the rest of the structure is absent.
   "magik": true,
   // Whether or not the software is considered as old (< Epsilon 11).
-  // This is primarely used by the parser itself to know where to read data.
+  // This is primarily used by the parser itself to know where to read data.
   "oldplatform": false,
   // This part of the data is related to the Omega fork of Epsilon.
   "omega": {
