@@ -58,11 +58,11 @@ class Numworks {
         }
         
         // If it's an Upsilon calculator, some sectors can be hidden
-        if (this.device.device_.name == 'Upsilon Bootloader') {
+        if (this.device.device_.productName == 'Upsilon Bootloader') {
             return "0110"
         }
 
-        if (this.device.device_.name == 'Upsilon Calculator') {
+        if (this.device.device_.productName == 'Upsilon Calculator') {
             return external_size ? "0110" : "0100"
         }
 
