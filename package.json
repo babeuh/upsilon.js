@@ -12,10 +12,10 @@
         "url": "git+https://github.com/UpsilonNumworks/upsilon.js.git"
     },
     "keywords": [
-      "numworks",
-      "webusb",
-      "webdfu",
-      "calculator"
+        "numworks",
+        "webusb",
+        "webdfu",
+        "calculator"
     ],
     "author": "M4x1m3",
     "license": "MIT",
