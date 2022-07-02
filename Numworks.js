@@ -258,8 +258,11 @@ class Numworks {
 
 
         if (data["magik"]) {
-            data["oldplatform"] = !(dv.getUint32(0x1C, false) === data["magik"]);
+            // The old platform doesn't exist anymore, and the bootloader has never supported it
             data["oldplatform"] = false;
+            if (!bootloaderMode) {
+                data["oldplatform"] = !(dv.getUint32(0x1C, false) === data["magik"]);
+            }
 
             data["omega"] = {};
 
