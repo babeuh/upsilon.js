@@ -13,42 +13,18 @@ class Storage {
         this.records = null;
     }
 
-    async __encodePyRecord(record, upsilonInstalled) {
+    async __encodePyRecord(record) {
         var content = new TextEncoder("utf-8").encode(record.code);
 
-        if (upsilonInstalled) {
-            // Upsilon's storage is encoded here
-            if (record.position === undefined) {
-                record.position = 0;
-            }
-            // Position is stored in an Uint16Array but we need to use a Uint8Array here
-            let positionUint16 = new Uint16Array([record.position]);
-            let positionUint8 = new Uint8Array(positionUint16.buffer, positionUint16.byteOffset, positionUint16.byteLength);
-            record.data = new Blob([
+        record.data = new Blob([
+            concatTypedArrays(
+                new Uint8Array([record.autoImport ? 1 : 0]),
                 concatTypedArrays(
-                    new Uint8Array([record.autoImport ? 1 : 0]),
-                    concatTypedArrays(
-                        positionUint8,
-                        concatTypedArrays(
-                            content,
-                            new Uint8Array([0])
-                        )
-                    )
+                    content,
+                    new Uint8Array([0])
                 )
-            ]);
-            delete record.position;
-        } else {
-            // Epsilon/Omega's storage is encoded here
-            record.data = new Blob([
-                concatTypedArrays(
-                    new Uint8Array([record.autoImport ? 1 : 0]),
-                    concatTypedArrays(
-                        content,
-                        new Uint8Array([0])
-                    )
-                )
-            ]);
-        }
+            )
+        ]);
 
         delete record.autoImport;
         delete record.code;
@@ -67,7 +43,7 @@ class Storage {
 
         var data = new Uint8Array([0xBA, 0xDD, 0x0B, 0xEE]); // Magic value 0xBADD0BEE (big endian)
 
-        for(var i in records) {
+        for (var i in records) {
             var record = records[i];
             var name = record.name + "." + record.type;
 
@@ -101,11 +77,11 @@ class Storage {
         return new Blob([data]);
     }
 
-    async __encodeRecord(record, upsilonInstalled) {
+    async __encodeRecord(record) {
         var encoders = this.__getRecordEncoders();
 
         if (record.type in encoders) {
-            record = encoders[record.type](record, upsilonInstalled);
+            record = encoders[record.type](record);
         }
 
         return record;
@@ -121,11 +97,11 @@ class Storage {
      *
      * @throw   Errors      when too much data is passed.
      */
-    async encodeStorage(size, upsilonInstalled) {
+    async encodeStorage(size) {
         var records = Object.assign({}, this.records);
 
-        for(var i in this.records) {
-            records[i] = await this.__encodeRecord(records[i], upsilonInstalled);
+        for (var i in this.records) {
+            records[i] = await this.__encodeRecord(records[i]);
 
         }
 
@@ -169,7 +145,7 @@ class Storage {
     __readString(dv, index, maxLen) {
         var out = "";
         var i = 0;
-        for(i = 0; i < maxLen || maxLen === 0; i++) {
+        for (i = 0; i < maxLen || maxLen === 0; i++) {
             var chr = dv.getUint8(index + i);
 
             if (chr === 0) {
@@ -185,17 +161,11 @@ class Storage {
         };
     }
 
-    async __parsePyRecord(record, upsilonInstalled) {
+    async __parsePyRecord(record) {
         var dv = new DataView(await record.data.arrayBuffer());
 
         record.autoImport = dv.getUint8(0) !== 0;
-        if (upsilonInstalled) {
-            record.position = dv.getUint16(1, false);
-            record.code = this.__readString(dv, 3, record.data.size - 4).content;
-        } else {
-            record.position = 0;
-            record.code = this.__readString(dv, 1, record.data.size - 1).content;
-        }
+        record.code = this.__readString(dv, 1, record.data.size - 1).content;
 
         delete record.data;
 
@@ -208,11 +178,11 @@ class Storage {
         };
     }
 
-    async __parseRecord(record, upsilonInstalled) {
+    async __parseRecord(record) {
         var parsers = this.__getRecordParsers();
 
         if (record.type in parsers) {
-            record = parsers[record.type](record, upsilonInstalled);
+            record = parsers[record.type](record);
         }
 
         return record;
@@ -223,7 +193,7 @@ class Storage {
      *
      * @param   blob        the encoded storage.
      */
-    async parseStorage(blob, upsilonInstalled) {
+    async parseStorage(blob) {
         var dv = new DataView(await blob.arrayBuffer());
 
         this.magik = dv.getUint32(0x00, false) === 0xBADD0BEE;
@@ -233,8 +203,8 @@ class Storage {
         if (this.magik) {
             this.records = await this.__sliceStorage(blob);
 
-            for(var i in this.records) {
-                this.records[i] = await this.__parseRecord(this.records[i], upsilonInstalled);
+            for (var i in this.records) {
+                this.records[i] = await this.__parseRecord(this.records[i]);
 
                 // Throwing away non-python stuff, for convinience.
                 // if (this.records[i].type !== 'py') this.records.splice(i, 1);
@@ -245,16 +215,16 @@ class Storage {
 
 function concatTypedArrays(a, b) {
     // Checks for truthy values on both arrays
-    if(!a && !b) throw new Error("Please specify valid arguments for parameters a and b.");
+    if (!a && !b) throw new Error("Please specify valid arguments for parameters a and b.");
 
     // Checks for truthy values or empty arrays on each argument
     // to avoid the unnecessary construction of a new array and
     // the type comparison
-    if(!b || b.length === 0) return a;
-    if(!a || a.length === 0) return b;
+    if (!b || b.length === 0) return a;
+    if (!a || a.length === 0) return b;
 
     // Make sure that both typed arrays are of the same type
-    if(Object.prototype.toString.call(a) !== Object.prototype.toString.call(b))
+    if (Object.prototype.toString.call(a) !== Object.prototype.toString.call(b))
         throw new Error("The types of the two arguments passed for parameters a and b do not match.");
 
     var c = new a.constructor(a.length + b.length);

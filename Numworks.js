@@ -546,7 +546,7 @@ class Numworks {
     async installStorage(storage, callback) {
         let pinfo = await this.getPlatformInfo();
 
-        let storage_blob = await storage.encodeStorage(pinfo["storage"]["size"], pinfo["upsilon"]["installed"]);
+        let storage_blob = await storage.encodeStorage(pinfo["storage"]["size"]);
         await this.__flashStorage(pinfo["storage"]["address"], await storage_blob.arrayBuffer());
 
         callback();
@@ -564,7 +564,7 @@ class Numworks {
 
         let storage = new Numworks.Storage();
 
-        await storage.parseStorage(storage_blob, pinfo["upsilon"]["installed"]);
+        await storage.parseStorage(storage_blob);
 
         return storage;
     }
