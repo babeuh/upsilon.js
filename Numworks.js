@@ -66,7 +66,7 @@ class Numworks {
             return external_size ? "0110" : "0100";
         }
 
-        if (internal_size === 0x10000) {
+        if (internal_size === 0x10000 || internal_size === 0x0) {
             if (external_size === 0) {
                 return (exclude_modded ? "????" : "0110-0M");
             } else if (external_size === 0x800000) {
