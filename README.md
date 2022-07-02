@@ -105,7 +105,7 @@ The function `getModel` can be used to determine the model of the connected calc
 ```js
 {
   // Whether or not the software is valid, based on a magic number. If false, the rest of the structure is absent.
-  "magik": true,
+  "magik": 4276994270,
   // Whether or not the software is considered as old (< Epsilon 11).
   // This is primarily used by the parser itself to know where to read data.
   "oldplatform": false,
@@ -124,19 +124,48 @@ The function `getModel` can be used to determine the model of the connected calc
     // The version of Upsilon detected on the calculator.
     "version": "1.0.0",
     // The type of Upsilon : if it is a derivate or not
-    "osType": "2020704889",
+    "osType": 2020704889,
     // A more simple way to get if it is a derivate or not, it is based on the os type
     "official": true
   },
   // The version of Epsilon installed on the calculator.
   "version": "13.0.0",
-  // The system's commit ID
-  "commit": " 651abf9",
+
   "storage": {
     // Address of the script storage
     "address": 165467,
     // Size of the script storage
     "size": 65535
+  },
+  // Epsilon's external application information.
+  "external": {
+    // The start of the external application flash area.
+    "flashStart": 4294967295,
+    // The end of the external application flash area.
+    "flashEnd": 4294967295,
+    // The size of the external application flash area. (flashEnd - flashStart)
+    "flashSize": 0,
+    // The start of the external application RAM area.
+    "ramStart": 4294967295,
+    // The end of the external application RAM area.
+    "ramEnd": 4294967295,
+    // The size of the external application RAM area. (ramEnd - ramStart)
+    "ramSize": 0
+  },
+  // The mode of the calculator (legacy/bootloader)
+  "mode": "bootloader",
+  // The system's commit ID
+  "commit": " 651abf9",
+  // The information about the running slot.
+  "slot": {
+    // Whether or not the slots informations are valid, based on a magic number. If false, the rest of the structure is absent.
+    "magik": true,
+    // The address of the kernel header.
+    "kernelHeader": 2415919112,
+    // The address of the userland header.
+    "userlandHeader": 2415984640,
+    // The slot name. (A/B/Khi, it can be undefined if the address of the slot isn't known)
+    "name": "A"
   }
 }
 ```
