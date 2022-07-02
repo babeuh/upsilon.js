@@ -21,10 +21,10 @@ class Recovery {
         this.manifestationTolerant = false;
         this.autoconnectId = null;
     }
-    
+
     /**
      * Get approximated the model of the calculator.
-      
+
      * This just checks the size of the internal size, because that's everything the STM32 bootloader
      * exposes.
      *
@@ -39,13 +39,13 @@ class Recovery {
      */
     getModel(exclude_modded = true) {
         var internal_size = 0;
-        
+
         for (let i = 0; i < this.device.memoryInfo.segments.length; i++) {
             if (this.device.memoryInfo.segments[i].start >= 0x08000000 && this.device.memoryInfo.segments[i].start <= 0x080FFFFF) {
                 internal_size += this.device.memoryInfo.segments[i].end - this.device.memoryInfo.segments[i].start;
             }
         }
-        
+
         if (internal_size === 0x80000) {
             return "0110";
         } else if (internal_size === 0x100000) {
@@ -54,7 +54,7 @@ class Recovery {
             return "????";
         }
     }
-    
+
     /**
      * Flash buffer to recovery location, in RAM.
      *
@@ -68,7 +68,7 @@ class Recovery {
         await this.device.clearStatus();
         await this.device.do_download(this.transferSize, buffer, true);
     }
-    
+
     async __getDFUDescriptorProperties(device) {
         // Attempt to read the DFU functional descriptor
         // TODO: read the selected configuration's descriptor
@@ -103,7 +103,7 @@ class Recovery {
             error => {}
         );
     }
-    
+
     /**
      * Detect a numworks calculator.
      *
@@ -112,19 +112,19 @@ class Recovery {
      */
     async detect(successCallback, errorCallback) {
         var _this = this;
-        navigator.usb.requestDevice({ 'filters': [{'vendorId': 0x0483, 'productId': 0xdf11}]}).then(
+        navigator.usb.requestDevice({ "filters": [{"vendorId": 0x0483, "productId": 0xdf11}]}).then(
             async selectedDevice => {
                 let interfaces = DFU.findDeviceDfuInterfaces(selectedDevice);
                 await _this.__fixInterfaceNames(selectedDevice, interfaces);
                 _this.device = await _this.__connect(new DFU.Device(selectedDevice, interfaces[0]));
-                
+
                 successCallback();
             }
         ).catch(error => {
             errorCallback(error);
         });
     }
-    
+
     /**
      * Connect to a WebDFU device.
      *
@@ -176,17 +176,17 @@ class Recovery {
         device.logWarning = console.warn;
         device.logError = console.error;
         device.logProgress = console.log;
-        
+
         return device;
     }
-    
+
     async __autoConnectDevice(device) {
         let interfaces = DFU.findDeviceDfuInterfaces(device.device_);
         await this.__fixInterfaceNames(device.device_, interfaces);
         device = await this.__connect(new DFU.Device(device.device_, interfaces[0]));
         return device;
     }
-    
+
     /**
      * Autoconnect a numworks calculator
      *
@@ -195,33 +195,33 @@ class Recovery {
     autoConnect(callback, serial) {
         var _this = this;
         var vid = 0x0483, pid = 0xdf11;
-        
+
         DFU.findAllDfuInterfaces().then(async dfu_devices => {
             let matching_devices = _this.__findMatchingDevices(vid, pid, serial, dfu_devices);
-            
+
             if (matching_devices.length !== 0) {
                 this.stopAutoConnect();
-                
+
                 this.device = await this.__autoConnectDevice(matching_devices[0]);
-                
+
                 await callback();
             }
         });
-        
+
         this.autoconnectId = setTimeout(this.autoConnect.bind(this, callback, serial), AUTOCONNECT_DELAY);
     }
-    
+
     /**
      * Stop autoconnection.
      */
     stopAutoConnect() {
         if (this.autoconnectId === null) return;
-        
+
         clearTimeout(this.autoconnectId);
-        
+
         this.autoconnectId = null;
     }
-    
+
     async __fixInterfaceNames(device_, interfaces) {
         // Check if any interface names were not read correctly
         if (interfaces.some(intf => (intf.name === null))) {
@@ -241,7 +241,7 @@ class Recovery {
             }
         }
     }
-    
+
     __findMatchingDevices(vid, pid, serial, dfu_devices) {
         let matching_devices = [];
         for (let dfu_device of dfu_devices) {
@@ -254,16 +254,16 @@ class Recovery {
                     (!pid && vid > 0 && dfu_device.device_.vendorId  === vid) ||
                     (!vid && pid > 0 && dfu_device.device_.productId === pid) ||
                     (vid > 0 && pid > 0 && dfu_device.device_.vendorId  === vid && dfu_device.device_.productId === pid)
-                   )
+                )
                 {
                     matching_devices.push(dfu_device);
                 }
             }
         }
-        
+
         return matching_devices;
     }
-    
+
     /**
      * Get storage from the calculator.
      *
@@ -276,7 +276,7 @@ class Recovery {
         this.device.startAddress = address;
         return await this.device.do_upload(this.transferSize, size + 8);
     }
-    
+
     /**
      * Flash storage to the calculator.
      *
@@ -287,7 +287,7 @@ class Recovery {
         this.device.startAddress = address;
         await this.device.do_download(this.transferSize, data, false);
     }
-    
+
     onUnexpectedDisconnect(event, callback) {
         if (this.device !== null && this.device.device_ !== null) {
             if (this.device.device_ === event.device) {
