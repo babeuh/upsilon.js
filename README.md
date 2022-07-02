@@ -176,7 +176,7 @@ The script store can be read using `backupStorage` and can be written to using `
 Here is an example of adding a script in the storage
 ```js
 var storage = await calculator.backupStorage();
-storage.records.push({"name": "test", "type": "py", "autoImport": true, position: 0, "code": "print('Hello World!')\n"});
+storage.records.push({"name": "test", "type": "py", "autoImport": true, "code": "print('Hello World!')\n"});
 await calculator.installStorage(storage, function() {
   // Do stuff after writing to the storage is done
 });
