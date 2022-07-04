@@ -166,7 +166,9 @@ The function `getModel` can be used to determine the model of the connected calc
     "userlandHeader": 2415984640,
     // The slot name. (A/B/Khi, it can be undefined if the address of the slot isn't known)
     "name": "A"
-  }
+  },
+  // The system's commit ID
+  "commit": " 651abf9"
 }
 ```
 
