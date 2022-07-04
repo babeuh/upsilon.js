@@ -40,13 +40,6 @@ async function connected() {
 
   var html_content = "Model: " + calculator.getModel(false) + "<br/>";
 
-  // Get the platform information
-  var platformInfo = await calculator.getPlatformInfo();
-  console.log(platformInfo);
-
-  // Backup the storage
-  // var storage = await calculator.backupStorage();
-  // console.log(storage);
 
   content.innerHTML = html_content;
 }
