@@ -398,7 +398,6 @@ class Numworks {
         this.device.startAddress = 0x20000000;
         let blob = await this.device.do_upload(this.transferSize, 0x64);
         let slotInfo = this.__parseSlotInfo(await blob.arrayBuffer());
-        console.log(slotInfo);
         if (slotInfo["slot"]["magik"]) {
             this.device.startAddress = slotInfo["slot"]["userlandHeader"];
             // this.device.startAddress = 0x90010000;
