@@ -154,7 +154,7 @@ class Numworks {
      */
     async detect(successCallback, errorCallback) {
         var _this = this;
-        navigator.usb.requestDevice({ "filters": [{"vendorId": 0x0483, "productId": 0xa291}]}).then(
+        await navigator.usb.requestDevice({ "filters": [{"vendorId": 0x0483, "productId": 0xa291}]}).then(
             async selectedDevice => {
                 let interfaces = DFU.findDeviceDfuInterfaces(selectedDevice);
                 await _this.__fixInterfaceNames(selectedDevice, interfaces);
