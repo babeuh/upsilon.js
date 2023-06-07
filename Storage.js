@@ -180,9 +180,9 @@ class Storage {
 
     async __parseRecord(record) {
         if (record.type != "py") {
+            console.log(record);
             let dv = new DataView(await record.data.arrayBuffer());
             record.code = this.__readString(dv, 1, record.data.size).content;
-            console.log(record)
             delete record.data;
             return record;
         }
