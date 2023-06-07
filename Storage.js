@@ -179,13 +179,13 @@ class Storage {
     }
 
     async __parseRecord(record) {
-        var parsers = this.__getRecordParsers();
-
-        if (record.type in parsers) {
-            record = parsers[record.type](record);
+        if (record.type != "py") {
+            let dv = new DataView(await record.data.arrayBuffer());
+            record.code = this.__readString(dv, 1, record.data.size).content;
+            delete record.data;
+            return record;
         }
-
-        return record;
+        return await storage.__parsePyRecord(record);
     }
 
     /**
