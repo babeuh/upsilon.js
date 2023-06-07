@@ -182,10 +182,11 @@ class Storage {
         if (record.type != "py") {
             let dv = new DataView(await record.data.arrayBuffer());
             record.code = this.__readString(dv, 1, record.data.size).content;
+            console.log(record)
             delete record.data;
             return record;
         }
-        return await storage.__parsePyRecord(record);
+        return await this.__parsePyRecord(record);
     }
 
     /**
